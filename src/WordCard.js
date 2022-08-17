@@ -22,6 +22,7 @@ export default function WordCard(props) {
   const [state, setState] = useState(perpareStateFromWord(props.value));
   const [words, setWords] = useState("");
   const [results, setResults] = useState("");
+  
   useEffect(() => {
     let interval;
     if (isActive) {
@@ -36,6 +37,13 @@ export default function WordCard(props) {
 
   function toggle(val) {
     setIsActive(val);
+  }
+
+  const reset = () => {
+    setState({ ...state, guess: "", attempt: state.attempt + 1 });
+    setCount(0)
+    setWords("")
+    setResults("")
   }
 
   const activationHandler = (c) => {
@@ -73,6 +81,9 @@ export default function WordCard(props) {
         <>
           <div className="postion-win"> {results}</div>
           <div className="took">time {count} seconds</div>
+          <button onClick={
+            reset
+          }>Reset</button>
         </>
       )}
 
