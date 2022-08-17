@@ -17,19 +17,29 @@ const perpareStateFromWord = given_word => {
 export default function WordCard(props) {
 
     const [state, setState] = useState(perpareStateFromWord(props.value))
+    const [words, setWords] = useState("");
 
     const activationHandler = c => {
         console.log(`${c} has been activated.`)
         let guess = state.guess + c
         setState({...state, guess: guess})
-
+        
+        setWords(guess)
         if(guess.length == state.word.length) {
             if(guess == state.word) {
                 console.log('yeah!')
+                setState({
+                    ...state,
+                    completed: true,
+                    guess: "",
+                    attempt: state.attempt + 1,
+                  });
                 setState({...state, completed: true})
+                
             }else {
-                console.log('reset, next attempt')
-                setState({...state, guess: '', attempt: state.attempt + 1})
+                console.log("reset, next attempt");
+        setState({ ...state, guess: "", attempt: state.attempt + 1 });
+        
             }
         }
 
@@ -37,12 +47,16 @@ export default function WordCard(props) {
     }
 
     return (
-        <div>
+        <>
+            <h1>words : {words}</h1>
+            
+            <div>
             {
                 state.chars.map((c, i) =>
                      <CharacterCard value= {c} key={i} activationHandler={activationHandler} attempt={state.attempt}/>)
             }
         </div>
-    )
+        </>
+    );
 
 }
