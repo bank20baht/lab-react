@@ -18,6 +18,7 @@ export default function WordCard(props) {
 
     const [state, setState] = useState(perpareStateFromWord(props.value))
     const [words, setWords] = useState("");
+    const [results, setResults] = useState("");
 
     const activationHandler = c => {
         console.log(`${c} has been activated.`)
@@ -35,11 +36,11 @@ export default function WordCard(props) {
                     attempt: state.attempt + 1,
                   });
                 setState({...state, completed: true})
-                
+                setResults("You win");
             }else {
                 console.log("reset, next attempt");
         setState({ ...state, guess: "", attempt: state.attempt + 1 });
-        
+        setResults("You lose");
             }
         }
 
@@ -49,7 +50,12 @@ export default function WordCard(props) {
     return (
         <>
             <h1>words : {words}</h1>
-            
+            {results != "" && (
+            <>
+                <div className="postion-win"> {results}</div>
+            </>
+            )}
+
             <div>
             {
                 state.chars.map((c, i) =>
