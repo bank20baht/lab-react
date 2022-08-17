@@ -63,11 +63,11 @@ export default function WordCard(props) {
           attempt: state.attempt + 1,
         });
         toggle(false);
-        setResults("You win");
+        setResults("Correct");
       } else {
         console.log("reset, next attempt");
         setState({ ...state, guess: "", attempt: state.attempt + 1 });
-        setResults("You lose");
+        setResults("Incorrect");
       }
     }
 
@@ -81,9 +81,6 @@ export default function WordCard(props) {
         <>
           <div className="postion-win"> {results}</div>
           <div className="took">time {count} seconds</div>
-          <button onClick={
-            reset
-          }>Reset</button>
         </>
       )}
 
@@ -100,7 +97,10 @@ export default function WordCard(props) {
           />
         ))}
       </div>
-      <h1>words : {words}</h1>
+      <h1 className="h1center">words : {words}</h1>
+      <button className="retry" onClick={
+            reset
+          }>Retry</button>
     </>
   );
 }
