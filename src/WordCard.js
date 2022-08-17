@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import _, { attempt } from 'lodash';
 import CharacterCard from "./CharacterCard";
 
@@ -10,7 +10,8 @@ const perpareStateFromWord = given_word => {
         chars,
         attempt: 1,
         guess: '',
-        completed: false
+        completed: false,
+        timer: 0,
     }
 }
 
@@ -19,11 +20,28 @@ export default function WordCard(props) {
     const [state, setState] = useState(perpareStateFromWord(props.value))
     const [words, setWords] = useState("");
     const [results, setResults] = useState("");
-
+    const [count, setCount] = useState(0);
+    const [isActive, setIsActive] = useState(false);
+    useEffect(() => {
+        let interval;
+        if (isActive) {
+          interval = setInterval(() => {
+            setCount((prev) => prev + 1);
+          }, 1000);
+        } else if (!isActive && count !== 0) {
+          clearInterval(interval);
+        }
+        return () => clearInterval(interval);
+      }, [count, isActive]);
+    
+    function toggle(val) {
+        setIsActive(val);
+    }
     const activationHandler = c => {
         console.log(`${c} has been activated.`)
         let guess = state.guess + c
         setState({...state, guess: guess})
+        toggle(true)
         
         setWords(guess)
         if(guess.length == state.word.length) {
@@ -36,11 +54,13 @@ export default function WordCard(props) {
                     attempt: state.attempt + 1,
                   });
                 setState({...state, completed: true})
+                toggle(false);
                 setResults("You win");
             }else {
                 console.log("reset, next attempt");
-        setState({ ...state, guess: "", attempt: state.attempt + 1 });
-        setResults("You lose");
+                setState({ ...state, guess: "", attempt: state.attempt + 1 });
+                toggle(false);
+                setResults("You lose");
             }
         }
 
@@ -53,9 +73,12 @@ export default function WordCard(props) {
             {results != "" && (
             <>
                 <div className="postion-win"> {results}</div>
+                <div className="took">You took {count} seconds</div>
             </>
             )}
-
+            <h3 style={{ position: "fixed", right: "5%", top: "10px" }}>
+                {count} Second
+            </h3>
             <div>
             {
                 state.chars.map((c, i) =>
